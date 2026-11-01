@@ -1,0 +1,10 @@
+{
+  "name": "My Little Phone",
+  "short_name": "Little Phone",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fcebf2",
+  "theme_color": "#ffe8f0",
+  "description": "A playful pretend phone with toddler-friendly games.",
+  "icons": []
+}
