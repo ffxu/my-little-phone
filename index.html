@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffe8f0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="My Little Phone">
+<link rel="manifest" href="manifest.webmanifest">
+<title>My Little Phone</title>
+<style>
+:root{--ink:#51445c;--pink:#ffb8cf;--purple:#c9b8ff;--yellow:#ffe58b;--blue:#aee7f5;--green:#bdecc8;--cream:#fff9f0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:ui-rounded,"Arial Rounded MT Bold",system-ui,sans-serif;color:var(--ink);background:#fcebf2;touch-action:pan-y}
+button{font:inherit;border:0;cursor:pointer;touch-action:manipulation;color:var(--ink)}
+#phone{height:100dvh;width:100%;max-width:520px;margin:auto;position:relative;overflow:hidden;background:linear-gradient(160deg,#fff2f6,#f1edff 55%,#e8faff);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);display:flex;flex-direction:column}
+#status{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:14px;font-weight:800}
+.status-right{display:flex;gap:7px;align-items:center}
+.pill{background:#ffffffa8;border-radius:20px;padding:5px 10px}
+#home{flex:1;display:flex;flex-direction:column;min-height:0}
+.greeting{text-align:center;padding:12px 0 16px}
+.greeting .sun{font-size:42px;display:block;filter:drop-shadow(0 4px 0 #fff)}
+.greeting h1{font-size:27px;margin:4px 0 3px;letter-spacing:-.8px}
+.greeting p{margin:0;font-size:14px;font-weight:700;opacity:.7}
+.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 10px;padding:4px 2px;max-width:420px;width:100%;margin:0 auto}
+.app{background:#ffffffa8;border:2px solid #fff;border-radius:25px;min-height:112px;padding:10px 4px 8px;box-shadow:0 5px 0 #d9cde9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:transform .1s}
+.app:active,.big:active,.navbtn:active{transform:scale(.94)}
+.app .emoji{font-size:42px;line-height:1.1}
+.app .name{font-size:13px;font-weight:900}
+.home-bottom{margin-top:auto;text-align:center;padding:14px 0 8px}
+.character{font-size:48px;animation:bob 2.4s ease-in-out infinite}
+.home-bottom p{font-size:12px;font-weight:800;opacity:.65;margin:0}
+@keyframes bob{50%{transform:translateY(-7px) rotate(4deg)}}
+#game{display:none;flex:1;min-height:0;flex-direction:column}
+.game-head{display:flex;align-items:center;gap:10px;padding:5px 0 12px}
+.back{width:48px;height:48px;border-radius:17px;background:#fff;box-shadow:0 4px 0 #ded4e8;font-size:25px;font-weight:900}
+.game-title{font-size:21px;font-weight:1000;flex:1}
+.game-content{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;padding:5px 0 12px;overflow:auto}
+.prompt{font-size:21px;font-weight:950;margin:0}
+.subprompt{font-size:14px;font-weight:750;opacity:.7;margin:0}
+.big{min-height:76px;min-width:76px;border-radius:24px;background:#fff;box-shadow:0 5px 0 #d8cde5;font-size:35px;padding:12px}
+.primary{background:#ffca79;box-shadow:0 5px 0 #e9a957;border-radius:22px;padding:15px 24px;font-size:18px;font-weight:950}
+.choices{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;width:100%}
+.choice{width:clamp(82px,25vw,112px);height:105px;border-radius:25px;background:#fff;box-shadow:0 5px 0 #d8cde5;font-size:48px;display:flex;align-items:center;justify-content:center}
+.feedback{min-height:32px;font-size:19px;font-weight:950}
+#dock{height:76px;display:flex;justify-content:center;align-items:center;gap:14px}
+.navbtn{width:54px;height:54px;border-radius:20px;background:#ffffffc9;box-shadow:0 4px 0 #d8cde5;font-size:25px}
+#toast{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:#fff;border-radius:22px;padding:10px 18px;box-shadow:0 5px 20px #6b557733;font-weight:900;display:none;z-index:10;white-space:nowrap}
+canvas{width:min(88vw,360px);height:min(42vh,290px);background:white;border:5px solid #fff;border-radius:24px;box-shadow:0 5px 0 #d8cde5;touch-action:none}
+.color-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.swatch{width:39px;height:39px;border-radius:50%;border:3px solid white;box-shadow:0 3px 0 #d8cde5}
+.balloon{font-size:76px;filter:drop-shadow(0 5px 0 #d9cde9);animation:float 2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-12px)}}
+.shape-target{width:125px;height:125px;background:#ffffffa8;border:4px dashed #bdaee0;border-radius:28px;display:grid;place-items:center;font-size:70px}
+.instrument{width:27%;height:110px;border-radius:22px;background:linear-gradient(#fff,#ffe6ef);box-shadow:0 5px 0 #d8cde5;font-size:40px}
+.star-count{font-size:42px;letter-spacing:6px;min-height:62px}
+@media(min-height:800px){.app{min-height:125px}.greeting{padding-top:24px}.app-grid{gap:20px 12px}}
+</style>
+</head>
+<body>
+<div id="phone">
+ <div id="status"><span id="clock">9:41</span><span class="status-right"><span class="pill">☀️</span><span class="pill">🔋 100%</span></span></div>
+ <div id="toast"></div>
+ <main id="home">
+  <div class="greeting"><span class="sun">🌈</span><h1>My Little Phone</h1><p>A happy little place to play!</p></div>
+  <div class="app-grid">
+   <button class="app" data-game="color"><span class="emoji">🎨</span><span class="name">Coloring</span></button>
+   <button class="app" data-game="animals"><span class="emoji">🐻</span><span class="name">Animals</span></button>
+   <button class="app" data-game="shapes"><span class="emoji">🔺</span><span class="name">Shapes</span></button>
+   <button class="app" data-game="balloons"><span class="emoji">🎈</span><span class="name">Balloon Pop</span></button>
+   <button class="app" data-game="music"><span class="emoji">🎵</span><span class="name">Music Box</span></button>
+   <button class="app" data-game="count"> <span class="emoji">⭐</span><span class="name">Counting</span></button>
+  </div>
+  <div class="home-bottom"><div class="character">🐰</div><p>Tap a picture to play!</p></div>
+ </main>
+ <section id="game">
+  <div class="game-head"><button class="back" id="back" aria-label="Go home">‹</button><div class="game-title" id="gameTitle">Let's play!</div><div class="pill" id="score">⭐ 0</div></div>
+  <div class="game-content" id="gameContent"></div>
+ </section>
+ <div id="dock"><button class="navbtn" id="homeBtn" aria-label="Home">🏠</button><button class="navbtn" id="soundBtn" aria-label="Sound on or off">🔊</button></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let score=0, soundOn=true, current='', round=0, color='#ff7fa8', audioCtx=null;
+const titles={color:'Coloring Studio',animals:'Animal Friends',shapes:'Shape World',balloons:'Balloon Pop',music:'Music Box',count:'Counting Stars'};
+function say(text){if(!soundOn)return;try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.rate=.85;u.pitch=1.3;speechSynthesis.speak(u)}catch(e){}}
+function beep(freq=550,dur=.12){if(!soundOn)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;g.gain.setValueAtTime(.08,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
+function celebrate(msg='Yay! Great job!'){score++;$('#score').textContent='⭐ '+score;$('#toast').textContent=msg;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',1100);beep(760,.18);say(msg)}
+function openGame(name){current=name;round=0;$('#home').style.display='none';$('#game').style.display='flex';$('#gameTitle').textContent=titles[name];$('#score').textContent='⭐ '+score;render()}
+function goHome(){current='';$('#game').style.display='none';$('#home').style.display='flex';$('#toast').style.display='none'}
+$('#back').onclick=goHome;$('#homeBtn').onclick=()=>current?goHome():say('Hello! Tap a game to play');$('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';if(!soundOn)speechSynthesis.cancel();else say('Sound is on')};
+document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>openGame(b.dataset.game)));
+function render(){
+ const c=$('#gameContent');c.innerHTML='';
+ if(current==='animals')animalGame(c);
+ if(current==='shapes')shapeGame(c);
+ if(current==='balloons')balloonGame(c);
+ if(current==='music')musicGame(c);
+ if(current==='count')countGame(c);
+ if(current==='color')colorGame(c);
+}
+const animals=[['🐮','cow','Moo!'],['🐱','cat','Meow!'],['🐶','dog','Woof!'],['🐸','frog','Ribbit!'],['🐑','sheep','Baa!'],['🦆','duck','Quack!']];
+function animalGame(c){let a=animals[round%animals.length];c.innerHTML=`<p class="prompt">Who says ${a[2]}</p><p class="subprompt">Tap the animal!</p><div class="choices">${animals.slice(0,4).sort(()=>Math.random()-.5).map(x=>`<button class="choice" data-animal="${x[1]}">${x[0]}</button>`).join('')}</div><div class="feedback" id="fb">🐾</div><button class="primary" id="next">Next animal ➜</button>`;c.querySelectorAll('[data-animal]').forEach(b=>b.onclick=()=>{if(b.dataset.animal===a[1]){ $('#fb').textContent='That’s right! '+a[2];celebrate('Great animal sound!')}else{ $('#fb').textContent='Try again!';beep(250)}});$('#next').onclick=()=>{round++;render()}}
+const shapes=[['🔴','circle'],['🟦','square'],['🔺','triangle'],['⭐','star'],['❤️','heart']];
+function shapeGame(c){let a=shapes[round%shapes.length];let opts=[a,...shapes.filter(x=>x!==a).sort(()=>Math.random()-.5).slice(0,2)].sort(()=>Math.random()-.5);c.innerHTML=`<p class="prompt">Find the ${a[1]}!</p><div class="shape-target">${a[0]}</div><div class="choices">${opts.map(x=>`<button class="choice" data-shape="${x[1]}">${x[0]}</button>`).join('')}</div><div class="feedback" id="fb">✨</div>`;c.querySelectorAll('[data-shape]').forEach(b=>b.onclick=()=>{if(b.dataset.shape===a[1]){ $('#fb').textContent='You found it!';celebrate('You found the '+a[1]+'!')}else{$('#fb').textContent='Almost! Try again';beep(250)}})}
+function balloonGame(c){let colors=['❤️','💙','💛','💚','💜','🩷'];let balloon=colors[round%colors.length];c.innerHTML=`<p class="prompt">Pop the balloon!</p><p class="subprompt">Tap the big balloon</p><button class="big balloon" id="pop">${balloon}</button><div class="feedback" id="fb">🎈 🎈 🎈</div><button class="primary" id="again">More balloons!</button>`;$('#pop').onclick=()=>{if($('#pop').textContent!=='💥'){$('#pop').textContent='💥';$('#fb').textContent='POP!';celebrate('Pop! Hooray!')}};$('#again').onclick=()=>{round++;render()}}
+function musicGame(c){c.innerHTML=`<p class="prompt">Make some music!</p><p class="subprompt">Tap the instruments</p><div class="choices">${[['🥁',180],['🎹',330],['🎺',440],['🔔',660],['🪇',520],['🎸',250]].map(x=>`<button class="instrument" data-note="${x[1]}">${x[0]}</button>`).join('')}</div><div class="feedback">🎶 🎵 🎶</div>`;c.querySelectorAll('[data-note]').forEach(b=>b.onclick=()=>{beep(Number(b.dataset.note),.25);b.animate([{transform:'scale(1)'},{transform:'scale(1.13)'},{transform:'scale(1)'}],{duration:220})})}
+function countGame(c){let n=round%5+1;let opts=[n,...[1,2,3,4,5].filter(x=>x!==n).sort(()=>Math.random()-.5).slice(0,2)].sort(()=>Math.random()-.5);c.innerHTML=`<p class="prompt">How many stars?</p><div class="star-count">${'⭐'.repeat(n)}</div><div class="choices">${opts.map(x=>`<button class="choice" data-count="${x}">${x}</button>`).join('')}</div><div class="feedback" id="fb">Count them!</div><button class="primary" id="nextCount">Next ⭐</button>`;c.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{if(Number(b.dataset.count)===n){$('#fb').textContent='1, 2, 3… You got it!';celebrate('That’s '+n+'!')}else{$('#fb').textContent='Let’s count again';beep(250)}});$('#nextCount').onclick=()=>{round++;render()}}
+function colorGame(c){c.innerHTML=`<p class="prompt">Make a masterpiece!</p><p class="subprompt">Pick a color and draw with your finger</p><canvas id="paint" width="720" height="560"></canvas><div class="color-row">${['#ff7fa8','#ffbd59','#ffe66d','#70d6a4','#68c8ef','#a88cf2','#51445c'].map(x=>`<button class="swatch" style="background:${x}" data-color="${x}" aria-label="Choose color"></button>`).join('')}</div><div class="choices"><button class="primary" id="clear">Clear 🧽</button><button class="primary" id="stamp">Add a star ⭐</button></div>`;let cv=$('#paint'),ctx=cv.getContext('2d');ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=24;let drawing=false;function pos(e){let r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height}}cv.onpointerdown=e=>{drawing=true;cv.setPointerCapture(e.pointerId);let p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.strokeStyle=color};cv.onpointermove=e=>{if(!drawing)return;let p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()};cv.onpointerup=()=>drawing=false;cv.onpointercancel=()=>drawing=false;c.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;ctx.strokeStyle=color;beep(500)});$('#clear').onclick=()=>{ctx.clearRect(0,0,cv.width,cv.height);beep(300)};$('#stamp').onclick=()=>{ctx.font='100px sans-serif';ctx.fillText('⭐',Math.random()*500+40,Math.random()*350+130);celebrate('A shiny star!')}}
+function updateClock(){let d=new Date();$('#clock').textContent=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}updateClock();setInterval(updateClock,30000);
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
