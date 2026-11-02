@@ -1,0 +1,12 @@
+{
+  "name": "Tiny Phone Adventures",
+  "short_name": "Tiny Adventures",
+  "description": "A playful little world for little fingers and big adventures.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffafd",
+  "theme_color": "#fff0f6",
+  "icons": []
+}
