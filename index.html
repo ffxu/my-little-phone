@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fff0f6">
+<meta name="description" content="Tiny Phone Adventures — a playful little world for little fingers and big adventures.">
+<title>Tiny Phone Adventures</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--pink:#ffe3ef;--lav:#e9e3ff;--mint:#ddf7ec;--yellow:#fff2c9;--blue:#dff1ff;--ink:#5f5870;--deep:#8d759e;--paper:#fffafd}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none;-webkit-user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;overscroll-behavior:none;touch-action:pan-x pan-y}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input{font:inherit}button{border:0;cursor:pointer;touch-action:manipulation;color:var(--ink)}
+#app{height:100dvh;display:flex;flex-direction:column;position:relative;background:linear-gradient(145deg,#fff8fb,#f5f1ff)}
+header{display:flex;align-items:center;justify-content:center;padding:10px 16px 6px;min-height:54px}
+.brand{font-weight:900;font-size:clamp(20px,5vw,28px);color:#987ba7;letter-spacing:.2px;text-align:center}
+#screen{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:10px 14px 18px;touch-action:pan-y}
+.home-intro{text-align:center;margin:0 auto 14px}.home-intro h1{font-size:clamp(24px,6vw,34px);margin:4px 0;color:#987ba7}.home-intro p{margin:0;color:#9a91a7}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:680px;margin:auto}
+.game-tile{min-height:clamp(112px,22vh,165px);border-radius:24px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 5px 0 #0000000a;transition:transform .12s}
+.game-tile:active{transform:scale(.97)}.game-tile .emoji{font-size:clamp(36px,10vw,56px);line-height:1.1}.game-tile strong{font-size:clamp(14px,3.8vw,18px)}
+.tile0{background:var(--pink)}.tile1{background:var(--lav)}.tile2{background:var(--mint)}.tile3{background:var(--yellow)}.tile4{background:var(--blue)}.tile5{background:#fce5d8}.tile6{background:#e8f5e4}.tile7{background:#f4e5ff}
+.subhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.subhead h2{margin:0;font-size:22px;color:#9276a1}
+.back{background:#fff;border-radius:18px;padding:10px 14px;box-shadow:0 3px 0 #0000000b;font-weight:800}
+.panel{background:#ffffffc9;border:2px solid #fff;border-radius:24px;padding:14px;box-shadow:0 5px 18px #a58eb51a}
+.game-area{position:relative;min-height:58vh;height:100%;border-radius:24px;overflow:hidden;background:#fff9fd;border:2px solid white;touch-action:none}
+.note{text-align:center;color:#9a91a7;font-size:13px;margin:8px}
+#balloonField{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#f7f1ff,#fff7fb)}
+.balloon{position:absolute;bottom:-100px;width:clamp(48px,12vw,76px);height:clamp(62px,15vw,96px);border-radius:50% 50% 46% 46%;display:grid;place-items:center;font-size:28px;box-shadow:inset -8px -7px 0 #0000000b;animation:floatUp var(--dur) linear forwards}
+.balloon:after{content:"";position:absolute;bottom:-13px;left:50%;height:15px;border-left:2px solid #b7a9bc}
+@keyframes floatUp{to{transform:translateY(-120vh) translateX(var(--drift));opacity:.15}}
+#followArea{background:linear-gradient(135deg,#effaf4,#f8f2ff);display:grid;place-items:center}
+.path{position:absolute;width:88%;height:76%;border:5px dashed #d4c1e7;border-radius:48% 30% 44% 28%;transform:rotate(-8deg);opacity:.8}
+.dobby{position:absolute;font-size:clamp(62px,18vw,100px);filter:drop-shadow(0 5px 2px #00000012);z-index:2;transition:left .18s,top .18s;touch-action:none}
+#doorGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:560px;margin:5vh auto}
+.door{min-height:clamp(130px,25vh,190px);border-radius:20px;background:linear-gradient(90deg,#d6c3eb 0 12%,#b89bd4 12% 88%,#d6c3eb 88%);box-shadow:inset 0 0 0 5px #ffffff70;display:grid;place-items:center;font-size:56px;position:relative}
+.door span{background:#fff8;border-radius:50%;padding:6px}
+#switchArea{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-content:center;padding:18px;background:linear-gradient(135deg,#fff3f8,#f3f0ff)}
+.color-switch{min-height:120px;border-radius:24px;font-size:40px;box-shadow:0 5px 0 #00000010;border:5px solid #fff9}
+#timingArea{display:flex;flex-direction:column;justify-content:center;gap:35px;padding:25px;background:linear-gradient(140deg,#fff7df,#f3f1ff)}
+.meter{height:34px;background:#e8e1ef;border-radius:30px;position:relative;overflow:hidden;border:4px solid white}
+.target{position:absolute;left:62%;width:17%;top:0;bottom:0;background:#bcebd6;border-left:2px solid #77c9a5;border-right:2px solid #77c9a5}
+.marker{position:absolute;top:-5px;bottom:-5px;width:9px;background:#9775b4;border-radius:9px;left:0}
+.big-count{text-align:center;font-size:clamp(28px,8vw,46px);font-weight:900;color:#987ba7}
+#dressArea{display:flex;align-items:center;justify-content:space-around;gap:8px;flex-wrap:wrap;background:linear-gradient(135deg,#fff0f4,#f1edff);padding:14px}
+#dobbyDress{width:42%;min-width:130px;height:290px;border-radius:28px;background:#fff9;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-size:94px;border:3px dashed #decde9}
+#dobbyDress .wear{position:absolute;font-size:42px;pointer-events:none}
+#clothes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:210px}
+.clothing{background:white;border-radius:18px;padding:12px;font-size:36px;min-width:76px;box-shadow:0 3px 0 #00000012;touch-action:none}
+#colorWrap{height:100%;display:flex;flex-direction:column;gap:8px}
+#colorCanvas{width:100%;height:100%;display:block;touch-action:none;background:#fff}
+#colorBoard{flex:1;min-height:0;position:relative;border:3px solid white;border-radius:20px;overflow:hidden;background:white}
+#hueSlider{width:100%;height:34px;accent-color:#b88cc8}
+.controls{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.soft-btn{padding:11px 18px;border-radius:18px;background:#fff;box-shadow:0 3px 0 #00000012;font-weight:800}
+#scratchBoard{position:relative;height:100%;min-height:58vh;border-radius:24px;overflow:hidden;border:3px solid white;background:white;touch-action:none}
+#revealPic{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(100px,30vw,190px);background:linear-gradient(135deg,#e5f8ed,#fff0f6,#f0eaff)}
+#scratchCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.hidden{display:none!important}
+#parentHold{position:fixed;left:0;bottom:0;width:48px;height:48px;z-index:1000;opacity:.001;touch-action:none}
+#modal{position:fixed;inset:0;background:#4d405b88;display:grid;place-items:center;z-index:2000;padding:20px}
+.modal-card{width:min(92vw,360px);background:#fffafd;border-radius:26px;padding:22px;text-align:center;box-shadow:0 15px 50px #34254444}
+.modal-card h2{margin:0 0 8px;color:#987ba7}.modal-card p{color:#8c8497}
+.modal-card input{width:100%;padding:14px;border:2px solid #eadcf0;border-radius:14px;font-size:20px;text-align:center;margin:8px 0 12px;user-select:text;-webkit-user-select:text}
+.modal-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+@media(min-width:700px){.home-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.game-area{max-width:900px;margin:auto;min-height:65vh}#doorGrid{grid-template-columns:repeat(4,1fr)}#switchArea{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="brand">✨ Tiny Phone Adventures ✨</div></header>
+<main id="screen"></main>
+<div id="parentHold" aria-hidden="true"></div>
+</div>
+<div id="modal" class="hidden"><div class="modal-card" id="modalCard"></div></div>
+<script>
+(()=> {
+"use strict";
+const $=s=>document.querySelector(s), screen=$("#screen"), modal=$("#modal"), modalCard=$("#modalCard");
+const games=[
+["🎈","Balloon Pop"],["🧦","Follow Dobby"],["🚪","Peek-a-Boo Doors"],["🎨","Color Switchboard"],
+["⭐","Perfect Timing"],["🧝","Free Dobby!"],["🖍️","Coloring Book"],["🌈","Scratch & Reveal"]
+];
+const surprises=["🐶","🐱","🦊","🐸","🦋","🚗","🌻","🧝","🐰","🐻","🚀","🌈"];
+const pictures=["🧝","🐶","🐱","🦊","🐸","🌻","⭐","❤️","🚗","🦋"];
+let childName=localStorage.getItem("tpa_nickname")||"", parentPin=localStorage.getItem("tpa_parent_pin")||"", currentCleanup=()=>{}, currentGame=-1;
+function greeting(){return childName?`${escapeHTML(childName)}'s Little Phone`:"Tiny Phone Adventures"}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function showModal(html){modalCard.innerHTML=html;modal.classList.remove("hidden")}
+function hideModal(){modal.classList.add("hidden")}
+function home(){
+ currentCleanup();currentCleanup=()=>{};currentGame=-1;
+ screen.innerHTML=`<section class="home-intro"><h1>Hi${childName?", "+escapeHTML(childName):" there"}! 💗</h1><p>Pick an adventure and let's play.</p></section><section class="home-grid">${games.map((g,i)=>`<button class="game-tile tile${i}" data-game="${i}"><span class="emoji">${g[0]}</span><strong>${g[1]}</strong></button>`).join("")}</section>`;
+ screen.querySelectorAll("[data-game]").forEach(b=>b.addEventListener("click",()=>launch(+b.dataset.game)));
+}
+function shell(title,body){screen.innerHTML=`<div class="subhead"><button class="back" id="backHome">← Home</button><h2>${title}</h2><span style="width:65px"></span></div>${body}`;$("#backHome").onclick=home;}
+function launch(i){currentCleanup();currentGame=i;[balloons,follow,doors,switchboard,timing,dress,coloring,scratch][i]();}
+function balloons(){
+ shell("Balloon Pop",`<div class="game-area" id="balloonField"></div><p class="note">Tap or swipe the balloons to pop them! 🎈</p>`);
+ const field=$("#balloonField");let live=true,timers=[];
+ const spawn=()=>{if(!live)return;const b=document.createElement("div");b.className="balloon";const colors=["#ff9fc4","#9dd8f5","#b9e8c9","#ffe08d","#c9b5f1","#ffb99e"];b.style.background=colors[Math.floor(Math.random()*colors.length)];b.style.left=(Math.random()*82+5)+"%";b.style.setProperty("--dur",(7+Math.random()*5)+"s");b.style.setProperty("--drift",(Math.random()*100-50)+"px");b.textContent=["✨","💗","⭐",""][Math.floor(Math.random()*4)];field.appendChild(b);b.addEventListener("pointerdown",e=>{e.preventDefault();b.remove();popBurst(field,e.clientX,e.clientY)});setTimeout(()=>b.remove(),13000);};
+ const id=setInterval(spawn,700);spawn();currentCleanup=()=>{live=false;clearInterval(id);};
+ field.addEventListener("pointermove",e=>{if(e.buttons) {const el=document.elementFromPoint(e.clientX,e.clientY);if(el?.classList.contains("balloon"))el.remove();}});
+}
+function popBurst(parent,x,y){const r=parent.getBoundingClientRect(),d=document.createElement("div");d.textContent="✨";d.style.cssText=`position:absolute;left:${x-r.left}px;top:${y-r.top}px;font-size:30px;pointer-events:none;`;parent.appendChild(d);setTimeout(()=>d.remove(),400)}
+function follow(){
+ shell("Follow Dobby",`<div class="game-area" id="followArea"><div class="path"></div><div class="dobby" id="walker" style="left:10%;top:14%">🧝</div><div style="position:absolute;bottom:14px;text-align:center;color:#9a91a7">Follow Dobby with your finger! 💗</div></div>`);
+ const area=$("#followArea"),w=$("#walker");let pts=[[10,14],[72,12],[83,37],[25,48],[16,78],[75,82],[87,55],[45,25]],idx=0;
+ const move=()=>{let p=pts[idx%pts.length];w.style.left=p[0]+"%";w.style.top=p[1]+"%";idx++};let timer=setInterval(move,1900);
+ let down=false;area.addEventListener("pointerdown",e=>{down=true;area.setPointerCapture(e.pointerId);});area.addEventListener("pointerup",()=>down=false);
+ area.addEventListener("pointermove",e=>{if(!down)return;let r=area.getBoundingClientRect();w.style.left=Math.max(0,Math.min(88,(e.clientX-r.left)/r.width*100-6))+"%";w.style.top=Math.max(0,Math.min(80,(e.clientY-r.top)/r.height*100-10))+"%";});
+ currentCleanup=()=>clearInterval(timer);
+}
+function doors(){
+ shell("Peek-a-Boo Doors",`<div class="game-area" style="background:linear-gradient(135deg,#effaf4,#fdf1f7)"><div id="doorGrid">${[0,1,2,3].map((n)=>`<button class="door" data-door="${n}"><span>🚪</span></button>`).join("")}</div></div><p class="note">Which surprise is hiding? Tap a door!</p>`);
+ $("#doorGrid").querySelectorAll(".door").forEach(b=>b.onclick=()=>{let n=+b.dataset.door;b.innerHTML=`<span>${surprises[(Math.floor(Math.random()*surprises.length))]}</span>`;b.style.background="#fff4ce";setTimeout(()=>{if(b.isConnected){b.innerHTML="<span>🚪</span>";b.style.background="";}},1800)});
+}
+function switchboard(){
+ shell("Color Switchboard",`<div class="game-area" id="switchArea">${["🌸","⭐","🌈","💗","🦋","☁️"].map((e,i)=>`<button class="color-switch" data-color="${i}">${e}</button>`).join("")}</div><p class="note">Tap the switches and change the colors!</p>`);
+ const colors=["#ffe3ef","#e9e3ff","#ddf7ec","#fff2c9","#dff1ff","#fce5d8"];let n=0;
+ $("#switchArea").querySelectorAll("button").forEach(b=>b.onclick=()=>{n++;$("#switchArea").style.background=colors[+b.dataset.color];b.style.background=colors[(+b.dataset.color+2)%6]});
+}
+function timing(){
+ shell("Perfect Timing",`<div class="game-area" id="timingArea"><div class="big-count" id="hits">⭐ 0</div><div class="meter"><div class="target"></div><div class="marker" id="marker"></div></div><button class="soft-btn" id="tapNow">Tap when the star is in the mint zone!</button><p class="note" id="timingMessage">The star keeps moving. Have fun!</p></div>`);
+ const marker=$("#marker"),area=$("#timingArea"),hits=$("#hits");let count=0,start=performance.now(),raf;
+ const tick=t=>{let x=(Math.sin((t-start)/650)+1)/2*94;marker.style.left=x+"%";raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);
+ $("#tapNow").onclick=()=>{let x=parseFloat(marker.style.left)||0;if(x>=58&&x<=82){count++;hits.textContent="⭐ "+count;$("#timingMessage").textContent="You did it! ✨"}else $("#timingMessage").textContent="Keep trying! You're doing great! 💗"};
+ currentCleanup=()=>cancelAnimationFrame(raf);
+}
+function dress(){
+ shell("Free Dobby!",`<div class="game-area" id="dressArea"><div id="dobbyDress"><div id="dobbyFace">🧝</div><div id="wearLayer"></div><small style="font-size:12px;color:#9a91a7">Dress Dobby!</small></div><div id="clothes">${["👕","👖","🧦","🎩","👟","🧥","🩳","🧢"].map((e,i)=>`<button class="clothing" draggable="false" data-cloth="${e}">${e}</button>`).join("")}</div><div style="width:100%;text-align:center"><button class="soft-btn" id="celebrate">🎉 Celebrate!</button></div></div><p class="note">Drag clothes onto Dobby. Mix and match!</p>`);
+ const target=$("#dobbyDress"),wear=$("#wearLayer");let chosen=[];
+ $("#clothes").querySelectorAll("button").forEach(b=>{let dragging=false;b.addEventListener("pointerdown",e=>{dragging=true;b.setPointerCapture(e.pointerId)});b.addEventListener("pointerup",e=>{if(!dragging)return;dragging=false;let r=target.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){chosen.push(b.dataset.cloth);wear.innerHTML=chosen.map((c,i)=>`<span class="wear" style="top:${22+(i%4)*46}px;left:${12+(i%2)*52}px">${c}</span>`).join("");$("#dobbyFace").textContent="🧝";}})});
+ $("#celebrate").onclick=()=>{showModal(`<h2>Dobby is free! 🎉</h2><p>Look at Dobby's wonderful outfit!</p><div style="font-size:76px">🧝💗✨</div><button class="soft-btn" id="yay">Keep playing</button>`);$("#yay").onclick=hideModal};
+}
+function coloring(){
+ shell("Coloring Book",`<div id="colorWrap" style="height:calc(100% - 48px)"><div id="colorBoard"><canvas id="colorCanvas"></canvas></div><div class="controls"><input id="hueSlider" type="range" min="0" max="360" value="330" aria-label="Choose a color"><button class="soft-btn" id="clearArt">Clear</button></div><p class="note">Choose a color and color the picture! A new picture comes every minute.</p></div>`);
+ const canvas=$("#colorCanvas"),ctx=canvas.getContext("2d"),board=$("#colorBoard"),slider=$("#hueSlider");let hue=330,drawing=false,outline=0,resetTimer;
+ const shapes=[
+  (c,w,h)=>{c.beginPath();c.arc(w/2,h/2,Math.min(w,h)*.28,0,Math.PI*2);c.stroke();c.beginPath();c.arc(w/2,h*.4,Math.min(w,h)*.12,0,Math.PI*2);c.stroke();},
+  (c,w,h)=>{c.beginPath();c.moveTo(w*.5,h*.18);c.bezierCurveTo(w*.12,h*.3,w*.2,h*.8,w*.5,h*.82);c.bezierCurveTo(w*.8,h*.8,w*.88,h*.3,w*.5,h*.18);c.stroke();},
+  (c,w,h)=>{c.beginPath();c.moveTo(w*.5,h*.12);c.lineTo(w*.58,h*.4);c.lineTo(w*.88,h*.42);c.lineTo(w*.65,h*.6);c.lineTo(w*.73,h*.9);c.lineTo(w*.5,h*.72);c.lineTo(w*.27,h*.9);c.lineTo(w*.35,h*.6);c.lineTo(w*.12,h*.42);c.lineTo(w*.42,h*.4);c.closePath();c.stroke();}
+ ];
+ function resize(){let r=board.getBoundingClientRect(),dpr=devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);drawOutline();}
+ function drawOutline(){let w=board.clientWidth,h=board.clientHeight;ctx.clearRect(0,0,w,h);ctx.lineWidth=8;ctx.lineJoin="round";ctx.lineCap="round";ctx.strokeStyle="#5f5870";shapes[outline%shapes.length](ctx,w,h);}
+ function point(e){let r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+ function paint(e){let [x,y]=point(e);ctx.save();ctx.globalCompositeOperation="source-atop";ctx.fillStyle=`hsl(${hue} 75% 65%)`;ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fill();ctx.restore();}
+ canvas.addEventListener("pointerdown",e=>{drawing=true;canvas.setPointerCapture(e.pointerId);paint(e)});canvas.addEventListener("pointermove",e=>{if(drawing)paint(e)});canvas.addEventListener("pointerup",()=>drawing=false);canvas.addEventListener("pointercancel",()=>drawing=false);
+ slider.oninput=()=>hue=+slider.value;$("#clearArt").onclick=()=>{drawOutline()};
+ function next(){outline++;resize();}resetTimer=setInterval(next,60000);window.addEventListener("resize",resize);resize();
+ currentCleanup=()=>{clearInterval(resetTimer);window.removeEventListener("resize",resize)};
+}
+function scratch(){
+ shell("Scratch & Reveal",`<div id="scratchBoard"><div id="revealPic">🧝</div><canvas id="scratchCanvas"></canvas></div><div class="controls" style="margin-top:10px"><button class="soft-btn" id="newScratch">New surprise ✨</button></div><p class="note">Rub the screen to discover the picture!</p>`);
+ const board=$("#scratchBoard"),canvas=$("#scratchCanvas"),ctx=canvas.getContext("2d"),pic=$("#revealPic");let index=Math.floor(Math.random()*pictures.length),drawing=false;
+ function setup(){let r=board.getBoundingClientRect(),dpr=devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalCompositeOperation="source-over";let g=ctx.createLinearGradient(0,0,r.width,r.height);g.addColorStop(0,"#bda6d9");g.addColorStop(.5,"#f6b9d2");g.addColorStop(1,"#a9d9cb");ctx.fillStyle=g;ctx.fillRect(0,0,r.width,r.height);ctx.fillStyle="#ffffffaa";ctx.font="bold 24px system-ui";ctx.textAlign="center";ctx.fillText("Scratch to reveal!",r.width/2,r.height/2);}
+ function rub(e){let r=canvas.getBoundingClientRect();ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.arc(e.clientX-r.left,e.clientY-r.top,28,0,Math.PI*2);ctx.fill();}
+ canvas.addEventListener("pointerdown",e=>{drawing=true;canvas.setPointerCapture(e.pointerId);rub(e)});canvas.addEventListener("pointermove",e=>{if(drawing)rub(e)});canvas.addEventListener("pointerup",()=>drawing=false);canvas.addEventListener("pointercancel",()=>drawing=false);
+ function fresh(){index=(index+1)%pictures.length;pic.textContent=pictures[index];setup()}$("#newScratch").onclick=fresh;pic.textContent=pictures[index];setup();
+ currentCleanup=()=>{};
+}
+function parentSettings(){
+ const first=!parentPin;
+ showModal(first?`<h2>Parent setup 🔒</h2><p>Create a 4-digit parent PIN. You'll use it to open parent settings.</p><input id="pinEntry" inputmode="numeric" maxlength="4" placeholder="4-digit PIN"><div class="modal-actions"><button class="soft-btn" id="pinSave">Save PIN</button><button class="soft-btn" id="pinCancel">Cancel</button></div>`:`<h2>Parent area 🔒</h2><p>Enter your parent PIN.</p><input id="pinEntry" inputmode="numeric" maxlength="4" placeholder="4-digit PIN"><div class="modal-actions"><button class="soft-btn" id="pinGo">Continue</button><button class="soft-btn" id="pinCancel">Cancel</button></div>`);
+ $("#pinCancel").onclick=hideModal;
+ const go=()=>{let p=$("#pinEntry").value;if(!/^\d{4}$/.test(p)){alert("Please enter four digits.");return}if(first){parentPin=p;localStorage.setItem("tpa_parent_pin",p);settingsMenu()}else if(p===parentPin)settingsMenu();else alert("That PIN didn't match. Try again.")};
+ $("#pinSave")?.addEventListener("click",go);$("#pinGo")?.addEventListener("click",go);
+}
+function settingsMenu(){
+ showModal(`<h2>Parent settings ⚙️</h2><p>Personalize this phone for your child.</p><input id="nameEdit" maxlength="20" placeholder="Child's nickname" value="${escapeHTML(childName)}"><div class="modal-actions"><button class="soft-btn" id="saveName">Save name</button><button class="soft-btn" id="changePin">Change PIN</button><button class="soft-btn" id="resetName">Reset name</button><button class="soft-btn" id="closeSettings">Close</button></div>`);
+ $("#saveName").onclick=()=>{childName=$("#nameEdit").value.trim().slice(0,20);localStorage.setItem("tpa_nickname",childName);hideModal();home()};
+ $("#resetName").onclick=()=>{$("#nameEdit").value="";childName="";localStorage.removeItem("tpa_nickname");hideModal();home()};
+ $("#changePin").onclick=()=>{showModal(`<h2>Change parent PIN</h2><input id="newPin" inputmode="numeric" maxlength="4" placeholder="New 4-digit PIN"><button class="soft-btn" id="saveNewPin">Save PIN</button><button class="soft-btn" id="cancelNewPin">Cancel</button>`);$("#saveNewPin").onclick=()=>{let p=$("#newPin").value;if(!/^\d{4}$/.test(p)){alert("Enter four digits.");return}parentPin=p;localStorage.setItem("tpa_parent_pin",p);settingsMenu()};$("#cancelNewPin").onclick=settingsMenu};
+ $("#closeSettings").onclick=hideModal;
+}
+let holdTimer,holdTriggered=false;const hold=$("#parentHold");
+hold.addEventListener("pointerdown",e=>{holdTriggered=false;holdTimer=setTimeout(()=>{holdTriggered=true;parentSettings()},3000)});
+["pointerup","pointercancel","pointerleave"].forEach(ev=>hold.addEventListener(ev,()=>clearTimeout(holdTimer)));
+document.addEventListener("contextmenu",e=>e.preventDefault());document.addEventListener("selectstart",e=>e.preventDefault());document.addEventListener("dragstart",e=>e.preventDefault());
+document.addEventListener("gesturestart",e=>e.preventDefault(),{passive:false});
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+home();
+})();
+</script>
+</body>
+</html>
